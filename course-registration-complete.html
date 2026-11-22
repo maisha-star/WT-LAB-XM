@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        #wrapper {
+            background-color: #e8f5e9;
+            width: 520px;
+            margin: 0 auto;
+            padding: 15px 20px 25px 20px;
+        }
+        h1 {
+            color: #1b7a2b;
+            text-align: center;
+            font-size: 22px;
+        }
+        #regForm {
+            background-color: white;
+            border: 2px solid #1b7a2b;
+            border-radius: 10px;
+            padding: 20px 25px;
+        }
+        #regForm td {
+            padding: 1px 10px 5px 0;
+            font-size: 13px;
+            vertical-align: top;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 170px;
+        }
+        #credits {
+            width: 50px;
+        }
+        .err {
+            color: red;
+            font-size: 11px;
+        }
+        #count {
+            font-weight: bold;
+            font-size: 13px;
+            text-align: center;
+        }
+        #list {
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 10px auto 0 auto;
+            background-color: white;
+        }
+        #list th {
+            background-color: #c8e6c9;
+            text-align: left;
+        }
+        #list th, #list td {
+            border: 1px solid black;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+ 
+    <div id="wrapper">
+ 
+        <h1>Course Registration</h1>
+ 
+        <form id="regForm" method="post" action="#" novalidate onsubmit="return validateForm()">
+            <table>
+                <tr>
+                    <td><label for="fname">Full Name</label></td>
+                    <td>
+                        <input type="text" id="fname" name="fname" required minlength="3">
+                        <div class="err" id="err-fname"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="sid">AIUB ID</label></td>
+                    <td>
+                        <input type="text" id="sid" name="sid" placeholder="22-12345-1" required pattern="[0-9]{2}-[0-9]{5}-[0-9]{1}">
+                        <div class="err" id="err-sid"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="email">Email</label></td>
+                    <td>
+                        <input type="email" id="email" name="email" required>
+                        <div class="err" id="err-email"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="credits">Credits</label></td>
+                    <td>
+                        <input type="number" id="credits" name="credits" required min="9" max="15">
+                        <div class="err" id="err-credits"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="course">Course</label></td>
+                    <td>
+                        <select id="course" name="course" required>
+                            <option value="">Select a course</option>
+                            <option value="Web Technologies">Web Technologies</option>
+                            <option value="Software Engineering">Software Engineering</option>
+                            <option value="Database Systems">Database Systems</option>
+                            <option value="Computer Networks">Computer Networks</option>
+                        </select>
+                        <div class="err" id="err-course"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Class time</td>
+                    <td>
+                        <input type="radio" id="shift-morning" name="shift" value="Morning" required>
+                        <label for="shift-morning">Morning</label>
+                        <input type="radio" id="shift-evening" name="shift" value="Evening" required>
+                        <label for="shift-evening">Evening</label>
+                        <div class="err" id="err-shift"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="checkbox" id="agree" name="agree" required>
+                        <label for="agree">I confirm the course advice</label>
+                        <div class="err" id="err-agree"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="pass">Password</label></td>
+                    <td>
+                        <input type="password" id="pass" name="pass" required minlength="6">
+                        <div class="err" id="err-pass"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="pass2">Confirm Password</label></td>
+                    <td>
+                        <input type="password" id="pass2" name="pass2" required>
+                        <div class="err" id="err-pass2"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="submit">Register Course</button></td>
+                </tr>
+            </table>
+        </form>
+ 
+        <p id="count">Total registrations: 0</p>
+ 
+        <table id="list">
+            <tr>
+                <th>Name</th>
+                <th>ID</th>
+                <th>Course</th>
+                <th>Credits</th>
+                <th>Action</th>
+            </tr>
+        </table>
+ 
+    </div>
+ 
+    <script>
+        var registrations = [];
+ 
+        function validateForm() {
+            var name = document.getElementById("fname").value.trim();
+            var sid = document.getElementById("sid").value;
+            var email = document.getElementById("email").value.trim();
+            var creditsStr = document.getElementById("credits").value;
+            var course = document.getElementById("course").value;
+            var morning = document.getElementById("shift-morning").checked;
+            var evening = document.getElementById("shift-evening").checked;
+            var agree = document.getElementById("agree").checked;
+            var pass = document.getElementById("pass").value;
+            var pass2 = document.getElementById("pass2").value;
+ 
+            var valid = true;
+ 
+            if (name.length < 3) {
+                document.getElementById("err-fname").innerHTML = "Name must have at least 3 characters";
+                valid = false;
+            } else {
+                document.getElementById("err-fname").innerHTML = "";
+            }
+ 
+            var idPattern = /^[0-9]{2}-[0-9]{5}-[0-9]{1}$/;
+            if (!idPattern.test(sid)) {
+                document.getElementById("err-sid").innerHTML = "ID must be in the format 22-12345-1";
+                valid = false;
+            } else {
+                document.getElementById("err-sid").innerHTML = "";
+            }
+ 
+            var domain = "@student.aiub.edu";
+            if (email.length <= domain.length || !email.endsWith(domain)) {
+                document.getElementById("err-email").innerHTML = "Email must end with @student.aiub.edu";
+                valid = false;
+            } else {
+                document.getElementById("err-email").innerHTML = "";
+            }
+ 
+            var credits = Number(creditsStr);
+            if (creditsStr === "" || isNaN(credits) || credits < 9 || credits > 15) {
+                document.getElementById("err-credits").innerHTML = "Credits must be between 9 and 15";
+                valid = false;
+            } else {
+                document.getElementById("err-credits").innerHTML = "";
+            }
+ 
+            if (course === "") {
+                document.getElementById("err-course").innerHTML = "Select a course";
+                valid = false;
+            } else {
+                document.getElementById("err-course").innerHTML = "";
+            }
+ 
+            if (!morning && !evening) {
+                document.getElementById("err-shift").innerHTML = "Choose a class time";
+                valid = false;
+            } else {
+                document.getElementById("err-shift").innerHTML = "";
+            }
+ 
+            if (!agree) {
+                document.getElementById("err-agree").innerHTML = "You must tick the box";
+                valid = false;
+            } else {
+                document.getElementById("err-agree").innerHTML = "";
+            }
+ 
+            if (pass.length < 6) {
+                document.getElementById("err-pass").innerHTML = "Password must have at least 6 characters";
+                valid = false;
+            } else {
+                document.getElementById("err-pass").innerHTML = "";
+            }
+ 
+            if (pass2 === "" || pass2 !== pass) {
+                document.getElementById("err-pass2").innerHTML = "Passwords do not match";
+                valid = false;
+            } else {
+                document.getElementById("err-pass2").innerHTML = "";
+            }
+ 
+            if (valid) {
+                var entry = {
+                    name: name,
+                    id: sid,
+                    course: course,
+                    credits: credits
+                };
+                registrations.push(entry);
+                addRow(entry);
+                updateCount();
+                document.getElementById("regForm").reset();
+            }
+ 
+            return false;
+        }
+ 
+        function addRow(entry) {
+            var table = document.getElementById("list");
+            var row = document.createElement("tr");
+ 
+            var values = [entry.name, entry.id, entry.course, entry.credits];
+            for (var i = 0; i < values.length; i++) {
+                var td = document.createElement("td");
+                td.appendChild(document.createTextNode(values[i]));
+                row.appendChild(td);
+            }
+ 
+            var actionTd = document.createElement("td");
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.appendChild(document.createTextNode("Remove"));
+ 
+            btn.onclick = function () {
+                var index = registrations.indexOf(entry);
+                if (index !== -1) {
+                    registrations.splice(index, 1);
+                }
+                row.parentNode.removeChild(row);
+                updateCount();
+            };
+ 
+            actionTd.appendChild(btn);
+            row.appendChild(actionTd);
+            table.appendChild(row);
+        }
+ 
+        function updateCount() {
+            document.getElementById("count").innerHTML = "Total registrations: " + registrations.length;
+        }
+    </script>
+ 
+</body>
+</html>
+has context menu
